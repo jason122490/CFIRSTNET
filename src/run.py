@@ -210,7 +210,7 @@ def evaluate(args, model, valid_loader, test_loader, mean, std, device):
                 pred = reverse_normalize(pred, mean['ir_drop'], std['ir_drop'])
                 aux_pred = reverse_normalize(aux_pred, mean['ir_drop'], std['ir_drop'])
                 
-            valid_result_save.update(pred, ir_drop)
+            test_result_save.update(pred, ir_drop)
 
     # get result
     print(f'-------------------- Valid --------------------')
