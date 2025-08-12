@@ -119,7 +119,7 @@ def train(args, model, train_loader, valid_loader, test_loader, mean, std, devic
 
                     loss = criterion(pred, ir_drop) + aux_criterion(aux_pred, ir_drop)
                     
-                valid_result_save.update(pred, ir_drop, loss.item())
+                test_result_save.update(pred, ir_drop, loss.item())
         
         # lr schedule
         scheduler.step(epoch + 1)
