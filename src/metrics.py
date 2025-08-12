@@ -3,7 +3,7 @@ from torch import nn
 import torch.nn.functional as F
 
 from torcheval.metrics.functional import binary_f1_score, binary_recall, binary_precision
-from transforms import reverse_transform
+from transforms import reverse_normalize
 
 def single_f1_score(input, target):
     # CHW or HW
@@ -39,8 +39,8 @@ class F1Score(nn.Module):
         values = torch.zeros(0).to(input.device)
         for input, target in zip(input, target):
             H, W = target.shape[-2:]
-            input = reverse_transform(input.unsqueeze(0), self.mean, self.std, H, W)
-            target = reverse_transform(target.unsqueeze(0), self.mean, self.std)
+            input = reverse_normalize(input.unsqueeze(0), self.mean, self.std, H, W)
+            target = reverse_normalize(target.unsqueeze(0), self.mean, self.std)
             
             value = f1_score(input, target, self.threshold).view(1)
             values = torch.cat((values, value), dim=0)
@@ -75,8 +75,8 @@ class Precision(nn.Module):
         values = torch.zeros(0).to(input.device)
         for input, target in zip(input, target):
             H, W = target.shape[-2:]
-            input = reverse_transform(input.unsqueeze(0), self.mean, self.std, H, W)
-            target = reverse_transform(target.unsqueeze(0), self.mean, self.std)
+            input = reverse_normalize(input.unsqueeze(0), self.mean, self.std, H, W)
+            target = reverse_normalize(target.unsqueeze(0), self.mean, self.std)
             
             value = precision(input, target, self.threshold).view(1)
             values = torch.cat((values, value), dim=0)
@@ -111,8 +111,8 @@ class Recall(nn.Module):
         values = torch.zeros(0).to(input.device)
         for input, target in zip(input, target):
             H, W = target.shape[-2:]
-            input = reverse_transform(input.unsqueeze(0), self.mean, self.std, H, W)
-            target = reverse_transform(target.unsqueeze(0), self.mean, self.std)
+            input = reverse_normalize(input.unsqueeze(0), self.mean, self.std, H, W)
+            target = reverse_normalize(target.unsqueeze(0), self.mean, self.std)
             
             value = recall(input, target, self.threshold).view(1)
             values = torch.cat((values, value), dim=0)
@@ -137,8 +137,8 @@ class MaxLoss(nn.Module):
         loss = torch.zeros(0).to(input.device)
         for input, target in zip(input, target):
             H, W = target.shape[-2:]
-            input = reverse_transform(input.unsqueeze(0), self.mean, self.std, H=H, W=W)
-            target = reverse_transform(target.unsqueeze(0), self.mean, self.std)
+            input = reverse_normalize(input.unsqueeze(0), self.mean, self.std, H=H, W=W)
+            target = reverse_normalize(target.unsqueeze(0), self.mean, self.std)
             
             max = (input - target).abs().max()
             loss = torch.cat((loss, max.view(1)), dim=0)
